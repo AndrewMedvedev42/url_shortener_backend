@@ -25,7 +25,7 @@ app.post("/url", async (req, res) => {
             return res.status(400).send({ msg: "Invalid URL." });
 
         const shortUrlId = urlServices.generateUrlKey();
-        const shortUrl = `http://${process.env.HOST}:${port}/${shortUrlId}`
+        const shortUrl = `${process.env.HOST}:${port}/${shortUrlId}`
         
         const url = new Url()
 
