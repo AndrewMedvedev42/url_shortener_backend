@@ -1,16 +1,6 @@
-const validate = require("validate.js");
 const shortId = require("shortid");
 
-const validateUrl = (url = "") => {
-    return validate({ website: url }, {
-        website: {
-            url: {
-                allowLocal: true
-            }
-        }
-    });
-}
-
+//Generate uniqe ID for the shorten url
 const generateUrlKey = () => shortId.generate();
 
-module.exports = { validateUrl, generateUrlKey: generateUrlKey }; 
+module.exports = { generateUrlKey: generateUrlKey }; 

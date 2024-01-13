@@ -1,12 +1,13 @@
 const axios = require("axios");
 
+//Check if url is safe using Google Safe Browsing
 module.exports = function googleSafeBrowse(url){
     try {
         axios.post(
             `https://safebrowsing.googleapis.com/v4/threatMatches:find?key=${process.env.GOOGLE_KEY}`,
             {
                 "client": {
-                  "clientId":"andrew",
+                  "clientId":`${process.env.USER_NAME}`,
                   "clientVersion": "1.5.2"
                 },
                 "threatInfo": {
@@ -16,9 +17,11 @@ module.exports = function googleSafeBrowse(url){
                 }
             }
         )
-            .catch(err => err);
+          .catch(err => err);
         return true
-    } catch (error) {
-      return false
+
+    } catch (err) {
+      return null
+
     }
 }

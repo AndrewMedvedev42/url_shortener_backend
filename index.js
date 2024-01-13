@@ -9,6 +9,7 @@ const Url = require("./data/url.model.js");
 const googleSafeBrowse = require("./google/google.ts")
 var cors = require('cors');
 
+//Cors settings
 app.use(cors());
 app.use(function(req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', `${process.env.CORS_HOST}`);
@@ -20,17 +21,20 @@ app.use(function(req, res, next) {
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+//Accept POST request
 app.post("/url", async (req, res) => {
     try {
-        console.log(googleSafeBrowse(req.body.url))
+
+        //Check if url is safe
         if (!googleSafeBrowse(req.body.url))
             return res.status(400).send({ msg: "Invalid URL." });
 
+        // Create shorten url
         const shortUrlId = urlServices.generateUrlKey();
         const shortUrl = `${process.env.HOST}/${shortUrlId}`
         
+        // Create new entry with data to database
         const url = new Url()
-
         url.longURL = req.body.url
         url.shortURL = shortUrl
         url.shortUrlId = shortUrlId
@@ -39,28 +43,29 @@ app.post("/url", async (req, res) => {
         return res.status(200).send({ shortUrl });
 
     } catch (error) {
-        console.log(error)
         return res.status(500).send({ msg: "Something went wrong. Please try again." });
     }
 }); 
 
+//When shorten url is used, find the entry with url in database and redirect full url
 app.get("/:shortUrlId", async (req, res) => {
     try {
         const url = await Url.findOne({shortUrlId:req.params.shortUrlId});
         return !url ? res.status(404).send("Not found") : res.redirect(301, url.longURL)
-
+        
     } catch (error) {
-        console.log(error)
         return res.status(500).send("Something went wrong. Please try again.")
     }
 }); 
 
 const start = async () => {
     try {
+        //Connection to database
         await connectToDataBase()
         app.listen(port, console.log(`Listening port ${port}`))
     } catch (error) {
         console.log(error);
     }
 }
+//Starts the server
 start()

@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+//Connection to database
 module.exports = async function connection() {
     try {
         await mongoose.connect(process.env.CLUSTER_URI);

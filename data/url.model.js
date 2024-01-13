@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+
+//Schema model for mondoDB
 const urlSchema = new mongoose.Schema({
     longURL: {
         type: String,
