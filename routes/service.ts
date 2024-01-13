@@ -1,5 +1,5 @@
 const validate = require("validate.js");
-const ShortUniqueId = require("short-unique-id");
+import { nanoid } from 'nanoid'
 
 const validateUrl = (url = "") => {
     return validate({ website: url }, {
@@ -11,6 +11,4 @@ const validateUrl = (url = "") => {
     });
 }
 
-const generateUrlKey = () => new ShortUniqueId({ length: 6 });
-
-module.exports = { validateUrl, generateUrlKey: generateUrlKey }; 
+module.exports = { validateUrl, generateUrlKey: nanoid(6)}; 
