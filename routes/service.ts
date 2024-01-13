@@ -1,5 +1,5 @@
 const validate = require("validate.js");
-import { nanoid } from 'nanoid'
+const nanoid = require("nanoid");
 
 const validateUrl = (url = "") => {
     return validate({ website: url }, {
