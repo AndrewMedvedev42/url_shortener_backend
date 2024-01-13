@@ -6,6 +6,7 @@ const connectToDataBase = require('./data/db.ts')
 const bodyParser = require("body-parser"); //use to parse incoming request bodies
 const urlServices = require("./routes/service.ts");
 const Url = require("./data/url.model.js");
+const googleSafeBrowse = require("./google/google.ts")
 var cors = require('cors');
 
 app.use(cors());
@@ -21,7 +22,8 @@ app.use(bodyParser.json());
 
 app.post("/url", async (req, res) => {
     try {
-        if (!!urlServices.validateUrl(req.body.url))
+        console.log(googleSafeBrowse(req.body.url))
+        if (!googleSafeBrowse(req.body.url))
             return res.status(400).send({ msg: "Invalid URL." });
 
         const shortUrlId = urlServices.generateUrlKey();
