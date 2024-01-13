@@ -1,5 +1,5 @@
 const validate = require("validate.js");
-const shortId = require("shortid");
+const ShortUniqueId = require("short-unique-id");
 
 const validateUrl = (url = "") => {
     return validate({ website: url }, {
@@ -11,6 +11,6 @@ const validateUrl = (url = "") => {
     });
 }
 
-const generateUrlKey = () => shortId.generate();
+const generateUrlKey = () => new ShortUniqueId({ length: 6 });
 
 module.exports = { validateUrl, generateUrlKey: generateUrlKey }; 
