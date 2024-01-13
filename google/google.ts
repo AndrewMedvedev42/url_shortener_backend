@@ -17,7 +17,7 @@ module.exports = async function isGoogleSafeBrowse (url) {
           }
         }
       ).catch(err => {
-        throw new Error("Bad request")
+        throw new Error("Validation failed")
       });
         return true
     } catch (err){
