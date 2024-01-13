@@ -25,7 +25,7 @@ app.use(bodyParser.json());
 app.post("/url", async (req, res) => {
     try {
         //Check if url is safe
-        if (await isGoogleSafeBrowse(req.body.url)){
+        if (await isGoogleSafeBrowse(req.body.url) && new URL(req.body.url)){
             // Create shorten url
             const shortUrlId = urlServices.generateUrlKey();
             const shortUrl = `${process.env.HOST}/${shortUrlId}`
