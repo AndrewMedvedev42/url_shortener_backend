@@ -6,7 +6,7 @@ const connectToDataBase = require('./data/db.ts')
 const bodyParser = require("body-parser"); //use to parse incoming request bodies
 const urlServices = require("./routes/service.ts");
 const Url = require("./data/url.model.js");
-const googleSafeBrowse = require("./google/google.ts")
+const isGoogleSafeBrowse = require("./google/google.ts")
 var cors = require('cors');
 
 //Cors settings
@@ -24,24 +24,23 @@ app.use(bodyParser.json());
 //Accept POST request
 app.post("/url", async (req, res) => {
     try {
-
         //Check if url is safe
-        if (!googleSafeBrowse(req.body.url))
-            return res.status(400).send({ msg: "Invalid URL." });
-
-        // Create shorten url
-        const shortUrlId = urlServices.generateUrlKey();
-        const shortUrl = `${process.env.HOST}/${shortUrlId}`
+        if (await isGoogleSafeBrowse(req.body.url)){
+            // Create shorten url
+            const shortUrlId = urlServices.generateUrlKey();
+            const shortUrl = `${process.env.HOST}/${shortUrlId}`
+                
+            // Create new entry with data to database
+            const url = new Url()
+            url.longURL = req.body.url
+            url.shortURL = shortUrl
+            url.shortUrlId = shortUrlId
         
-        // Create new entry with data to database
-        const url = new Url()
-        url.longURL = req.body.url
-        url.shortURL = shortUrl
-        url.shortUrlId = shortUrlId
-
-        await url.save()
-        return res.status(200).send({ shortUrl });
-
+            await url.save()
+            return res.status(200).send({ shortUrl });
+        }else{
+            return res.status(400).send({ msg: "Invalid URL." });
+        }
     } catch (error) {
         return res.status(500).send({ msg: "Something went wrong. Please try again." });
     }
@@ -52,7 +51,7 @@ app.get("/:shortUrlId", async (req, res) => {
     try {
         const url = await Url.findOne({shortUrlId:req.params.shortUrlId});
         return !url ? res.status(404).send("Not found") : res.redirect(301, url.longURL)
-        
+
     } catch (error) {
         return res.status(500).send("Something went wrong. Please try again.")
     }
